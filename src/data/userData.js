@@ -1,0 +1,25 @@
+export const currentUser = {
+  id: "usr_mospi_8842",
+  name: "Arjun Sharma",
+  email: "arjun.sharma@mospi.gov.in",
+  role: "Senior Statistical Officer",
+  department: "National Accounts Division",
+  ministry: "Ministry of Statistics & Programme Implementation",
+  location: "New Delhi Headquarters",
+  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256",
+  ssoVerified: true,
+  ssoId: "GOV-SSO-991823",
+  joinedDate: "2021-04-15",
+  overallReadiness: 74,
+  readinessLabel: "Proficient Officer",
+  activeRoleTarget: "Lead Data Analyst & Economic Forecaster",
+  stats: {
+    competenciesTracked: 9,
+    gapsIdentified: 4,
+    criticalGaps: 1,
+    enrolledCourses: 3,
+    completedCourses: 7,
+    assessmentsTaken: 12,
+    learningHours: 48.5,
+  }
+};
