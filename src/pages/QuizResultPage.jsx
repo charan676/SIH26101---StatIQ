@@ -1,51 +1,77 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import { ProgressRing } from '../components/common/Card';
 import { sampleQuiz } from '../data/quizData';
+import { useUser } from '../context/UserContext';
 import { CheckCircle2, XCircle, ArrowRight, RefreshCw, Trophy, ShieldCheck, BookOpen, Award, LineChart } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function QuizResultPage() {
   const location = useLocation();
+  const { userState, recordQuizCompletion } = useUser();
+
   const userAnswers = location.state?.answers || { 0: 1, 1: 1, 2: 1, 3: 1 };
+  const quizId = location.state?.quizId || 'quiz_stat_101';
+  const quizTitle = location.state?.quizTitle || 'AI/ML & Econometric Statistical Intelligence Quiz';
+  const competencyDomain = location.state?.competencyDomain || 'AI/ML';
+  const questionsList = location.state?.questions || sampleQuiz.questions;
 
   let correctCount = 0;
-  sampleQuiz.questions.forEach((q, idx) => {
+  questionsList.forEach((q, idx) => {
     if (userAnswers[idx] === q.correctAnswerIndex) {
       correctCount += 1;
     }
   });
 
-  const totalCount = sampleQuiz.questions.length;
+  const totalCount = questionsList.length;
   const percentage = Math.round((correctCount / totalCount) * 100);
   const pointsGained = percentage >= 75 ? 16 : percentage >= 50 ? 10 : 5;
 
-  const beforeScore = 42;
-  const afterScore = beforeScore + pointsGained;
-  const targetScore = 75;
-  const remainingGap = targetScore - afterScore;
+  // Persist result in global user state upon page load
+  useEffect(() => {
+    recordQuizCompletion({
+      quizId,
+      title: quizTitle,
+      competency: competencyDomain,
+      scorePercent: percentage
+    });
+  }, [quizId, percentage]);
+
+  // Find baseline competency score from user state or defaults
+  const compMatch = (userState.competencyProfile || []).find(c =>
+    c.name.toLowerCase().includes(competencyDomain.toLowerCase()) ||
+    competencyDomain.toLowerCase().includes(c.name.toLowerCase())
+  );
+
+  const currentScore = compMatch ? compMatch.current : 65;
+  const beforeScore = Math.max(30, currentScore - pointsGained);
+  const afterScore = currentScore;
+  const targetScore = compMatch ? compMatch.required : 80;
+  const remainingGap = Math.max(0, targetScore - afterScore);
 
   return (
     <PageContainer>
       <div className="max-w-3xl mx-auto space-y-8 pb-12">
         {/* Main Result Card */}
-        <div className="p-8 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-2xl text-center space-y-6">
-          <div className="w-16 h-16 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto shadow-md">
-            <Trophy className="w-8 h-8 text-cyan-400" />
+        <div className="p-8 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-2xl space-y-6">
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto shadow-md">
+              <Trophy className="w-8 h-8 text-cyan-400" />
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs text-cyan-400 font-semibold uppercase tracking-wider">MoSPI Assessment Execution Report</span>
+              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                {percentage >= 75 ? 'Assessment Passed with Distinction!' : 'Assessment Complete'}
+              </h1>
+              <p className="text-xs text-slate-400">
+                {quizTitle} • Target Competency: <strong className="text-white">{competencyDomain}</strong>
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <span className="text-xs text-cyan-400 font-semibold uppercase tracking-wider">MoSPI Assessment Execution Report</span>
-            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-              {percentage >= 75 ? 'Assessment Passed with Honors!' : 'Assessment Completed'}
-            </h1>
-            <p className="text-xs text-slate-400">
-              AI/ML & Econometric Statistical Intelligence Evaluation
-            </p>
-          </div>
-
-          <div className="py-2">
-            <ProgressRing score={percentage} size={120} strokeWidth={9} label="Score" />
+          <div className="py-2 flex flex-col items-center justify-center">
+            <ProgressRing score={percentage} size={120} strokeWidth={9} label="Accuracy" />
           </div>
 
           {/* Quick Metrics Pills */}
@@ -72,13 +98,13 @@ export default function QuizResultPage() {
                 <h3 className="text-base font-bold text-white">Competency Score Recalculation</h3>
               </div>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 text-xs font-bold">
-                +{pointsGained} pts Gain
+                +{pointsGained} pts Gain Recalculated
               </span>
             </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">Target Competency: <strong className="text-white">AI / ML</strong></span>
+                <span className="text-slate-400">Domain: <strong className="text-white">{competencyDomain}</strong></span>
                 <span className="text-slate-400">Position Target: <strong className="text-blue-400">{targetScore}/100</strong></span>
               </div>
 
@@ -102,11 +128,47 @@ export default function QuizResultPage() {
                   className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full"
                   style={{ width: `${afterScore}%` }}
                 />
-                <div
-                  className="absolute top-0 bottom-0 w-1 bg-white z-10"
-                  style={{ left: `${targetScore}%` }}
-                />
               </div>
+            </div>
+          </div>
+
+          {/* QUESTION BY QUESTION REVIEW */}
+          <div className="space-y-4 text-left border-t border-slate-800 pt-6">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-cyan-400" />
+              <span>Detailed Question Review</span>
+            </h3>
+
+            <div className="space-y-3">
+              {questionsList.map((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correctAnswerIndex;
+                return (
+                  <div key={q.id || idx} className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <h4 className="text-xs font-bold text-white leading-relaxed">
+                        Q{idx + 1}. {q.questionText}
+                      </h4>
+                      {isCorrect ? (
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-bold border border-emerald-500/20 shrink-0">
+                          Correct
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 text-[10px] font-bold border border-rose-500/20 shrink-0">
+                          Incorrect
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-slate-400">
+                      Correct Answer: <strong className="text-emerald-400">{q.options[q.correctAnswerIndex]}</strong>
+                    </p>
+                    <p className="text-[11px] text-slate-400 bg-slate-900 p-2.5 rounded-lg border border-slate-800/80">
+                      💡 {q.explanation}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -114,7 +176,7 @@ export default function QuizResultPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 border-t border-slate-800">
             <Link
               to="/assessments"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition-colors"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition-colors text-center"
             >
               Back to Assessment Hub
             </Link>

@@ -23,13 +23,40 @@ class CompetencyDomain(str, enum.Enum):
     AI_AND_MACHINE_LEARNING = "AI & Machine Learning"
 
 
+class StatisticalRole(str, enum.Enum):
+    DIRECTOR_GENERAL = "Director General"
+    ADDITIONAL_DIRECTOR_GENERAL = "Additional Director General"
+    JOINT_DIRECTOR = "Joint Director"
+    DEPUTY_DIRECTOR = "Deputy Director"
+    ASSISTANT_DIRECTOR = "Assistant Director"
+    SENIOR_STATISTICAL_OFFICER = "Senior Statistical Officer (SSO)"
+    JUNIOR_STATISTICAL_OFFICER = "Junior Statistical Officer (JSO)"
+    DATA_PROCESSING_ASSISTANT = "Data Processing Assistant"
+    FIELD_OPERATION_OFFICER = "Field Operation Officer"
+    NATIONAL_ACCOUNTS_SPECIALIST = "National Accounts Specialist"
+    PRICE_INDEX_ANALYST = "Price Index Analyst"
+    SURVEY_DESIGN_EXPERT = "Survey Design Expert"
+    AGRICULTURAL_STATISTICIAN = "Agricultural Statistician"
+    INDUSTRIAL_STATISTICS_OFFICER = "Industrial Statistics Officer"
+    DATA_SCIENTIST_ANALYST = "Data Scientist / Analyst"
+    TRAINER_CONTENT_CREATOR = "Trainer / Content Creator"
+    SYSTEM_ADMINISTRATOR = "System Administrator"
+    MINISTRY_OBSERVER = "Ministry Observer / Auditor"
+
+
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     display_name: Mapped[str] = mapped_column(String(150))
+    role: Mapped[str] = mapped_column(String(100), default=StatisticalRole.JUNIOR_STATISTICAL_OFFICER.value, nullable=False)
+    email_validated: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    streak_count: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
+    xp_points: Mapped[int] = mapped_column(Integer, default=450, nullable=False)
+    total_learning_hours: Mapped[float] = mapped_column(default=12.5, nullable=False)
+    last_active_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), server_default=func.now())
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -44,10 +71,11 @@ class Profile(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False)
     designation: Mapped[str] = mapped_column(String(150))
-    department: Mapped[str | None] = mapped_column(String(150))
+    department: Mapped[str | None] = mapped_column(String(150), default="NSSO Field Operations Division")
+    seniority_level: Mapped[int] = mapped_column(Integer, default=2, nullable=False) # Level 1 (Junior) to 5 (Senior/Expert)
     current_assignment: Mapped[str | None] = mapped_column(String(255))
     education: Mapped[str | None] = mapped_column(Text)
-    years_of_experience: Mapped[int | None] = mapped_column(Integer)
+    years_of_experience: Mapped[int | None] = mapped_column(Integer, default=4)
     previous_trainings: Mapped[list | None] = mapped_column(JSON, default=list)
     target_role: Mapped[str | None] = mapped_column(String(150))
     preferred_language: Mapped[str] = mapped_column(String(10), default="en", nullable=False)

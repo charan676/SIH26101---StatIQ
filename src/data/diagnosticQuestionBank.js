@@ -1,5 +1,5 @@
 export const diagnosticQuestionBank = {
-  "Statistical Officer / Employee": {
+  "Statistical Officer": {
     "Beginner": [
       {
         id: "so_b_1",
@@ -611,7 +611,7 @@ export const diagnosticQuestionBank = {
 };
 
 export function getDiagnosticQuestions(role, level) {
-  let roleKey = "Statistical Officer / Employee";
+  let roleKey = "Statistical Officer";
   if (role === "Training Officers" || role === "Trainer / Training & Assessment Officer") {
     roleKey = "Trainer / Training & Assessment Officer";
   } else if (role === "Department Administrators / HR Officers" || role === "Administrator") {
@@ -620,7 +620,7 @@ export function getDiagnosticQuestions(role, level) {
     roleKey = "Trainer / Training & Assessment Officer";
   }
   
-  const roleBank = diagnosticQuestionBank[roleKey] || diagnosticQuestionBank["Statistical Officer / Employee"];
+  const roleBank = diagnosticQuestionBank[roleKey] || diagnosticQuestionBank["Statistical Officer"];
   const questions = roleBank[level] || roleBank["Intermediate"] || roleBank["Beginner"];
   return questions;
 }

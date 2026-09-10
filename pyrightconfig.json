@@ -1,0 +1,29 @@
+{
+  "include": [
+    "backend"
+  ],
+  "venvPath": "backend",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "pythonPlatform": "Windows",
+  "extraPaths": [
+    "c:/Users/user/.gemini/antigravity-ide/scratch/sih26101-prototype/backend",
+    "c:/Users/user/.gemini/antigravity-ide/scratch/sih26101-prototype/backend/app",
+    "c:/Users/user/.gemini/antigravity-ide/scratch/sih26101-prototype/backend/app/routers",
+    "c:/Users/user/.gemini/antigravity-ide/scratch/sih26101-prototype/backend/.venv/Lib/site-packages",
+    "C:/Users/user/AppData/Local/Programs/Python/Python312/Lib/site-packages"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "backend",
+      "extraPaths": [
+        "app",
+        "app/routers",
+        ".venv/Lib/site-packages",
+        "C:/Users/user/AppData/Local/Programs/Python/Python312/Lib/site-packages"
+      ]
+    }
+  ],
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none"
+}

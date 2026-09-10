@@ -22,13 +22,31 @@ import {
 import { Link } from 'react-router-dom';
 
 export default function MyLearning() {
-  const { userState } = useUser();
+  const { userState, updateCourseProgress, unenrollCourse } = useUser();
   const [activeTab, setActiveTab] = useState('progress');
-  const [coursesList, setCoursesList] = useState(initialCourses);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-  const activeCourses = coursesList.filter(c => c.enrolled && c.progress < 100);
-  const completedCourses = coursesList.filter(c => c.progress === 100);
+  const enrolledIds = userState.enrolledCourses || ['crs_igot_101', 'crs_igot_102', 'crs_igot_103', 'crs_igot_105'];
+  const progressMap = userState.courseProgressMap || {
+    'crs_igot_101': 25,
+    'crs_igot_102': 65,
+    'crs_igot_103': 30,
+    'crs_igot_105': 100
+  };
+
+  const dynamicCoursesList = initialCourses
+    .filter(c => enrolledIds.includes(c.id))
+    .map(c => {
+      const progress = progressMap[c.id] ?? 25;
+      return {
+        ...c,
+        enrolled: true,
+        progress
+      };
+    });
+
+  const activeCourses = dynamicCoursesList.filter(c => c.progress < 100);
+  const completedCourses = dynamicCoursesList.filter(c => c.progress === 100);
 
   const streak = userState.streak || {
     currentStreak: 7,
@@ -39,19 +57,14 @@ export default function MyLearning() {
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const handleToggleEnroll = (courseId) => {
-    setCoursesList(prev => prev.map(c => {
-      if (c.id === courseId) {
-        return { ...c, enrolled: false, progress: 0 };
-      }
-      return c;
-    }));
+    unenrollCourse(courseId);
   };
 
   return (
     <PageContainer>
       <div className="space-y-8 pb-12">
         {/* Header Title & Subtitle */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#243247] pb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 tracking-tight">
               <GraduationCap className="w-6 h-6 text-cyan-400" />
@@ -64,7 +77,7 @@ export default function MyLearning() {
 
           <Link
             to="/courses"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 text-xs font-bold text-slate-950 hover:bg-cyan-400 transition-colors shrink-0 shadow-md"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 text-xs font-bold text-slate-950 hover:bg-cyan-400 transition-colors shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.25)]"
           >
             <span>Browse More iGOT Courses</span>
             <ArrowRight className="w-4 h-4" />
@@ -72,13 +85,13 @@ export default function MyLearning() {
         </div>
 
         {/* Tab Selector */}
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-3 flex-wrap">
+        <div className="flex items-center gap-2 border-b border-[#243247] pb-3 flex-wrap">
           <button
             onClick={() => setActiveTab('progress')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'progress'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md'
-                : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.25)]'
+                : 'bg-[#111A28] text-slate-400 hover:text-white border border-[#243247]'
             }`}
           >
             <Flame className="w-4 h-4 text-amber-400" />
@@ -88,8 +101,8 @@ export default function MyLearning() {
             onClick={() => setActiveTab('active')}
             className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
               activeTab === 'active'
-                ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                ? 'bg-cyan-500 text-slate-950 shadow-sm font-bold'
+                : 'bg-[#111A28] text-slate-400 hover:text-white border border-[#243247]'
             }`}
           >
             Enrolled Modules ({activeCourses.length})
@@ -98,8 +111,8 @@ export default function MyLearning() {
             onClick={() => setActiveTab('completed')}
             className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
               activeTab === 'completed'
-                ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                ? 'bg-emerald-500 text-slate-950 shadow-sm font-bold'
+                : 'bg-[#111A28] text-slate-400 hover:text-white border border-[#243247]'
             }`}
           >
             Completed & Certified ({completedCourses.length})
@@ -110,8 +123,8 @@ export default function MyLearning() {
         {activeTab === 'progress' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             {/* LEARNING STREAK BANNER */}
-            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-amber-950/30 border border-amber-500/30 space-y-6 shadow-xl relative overflow-hidden">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-800/80 pb-6">
+            <div className="p-6 md:p-8 rounded-2xl bg-[#111A28] border border-amber-500/30 space-y-6 shadow-[0_0_20px_rgba(245,158,11,0.1)] relative overflow-hidden">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#243247] pb-6">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 text-amber-400 text-xs font-bold border border-amber-500/30">
                     <Flame className="w-4 h-4 fill-amber-400 animate-bounce" />
@@ -126,11 +139,11 @@ export default function MyLearning() {
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0">
-                  <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-center min-w-[110px]">
+                  <div className="p-4 rounded-xl bg-[#070A0F] border border-[#243247] text-center min-w-[110px]">
                     <span className="text-[10px] text-slate-400 uppercase font-bold block">Current Streak</span>
                     <span className="text-2xl font-black text-amber-400">{streak.currentStreak} Days</span>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-center min-w-[110px]">
+                  <div className="p-4 rounded-xl bg-[#070A0F] border border-[#243247] text-center min-w-[110px]">
                     <span className="text-[10px] text-slate-400 uppercase font-bold block">Best Streak</span>
                     <span className="text-2xl font-black text-cyan-400">{streak.bestStreak} Days</span>
                   </div>
@@ -152,11 +165,11 @@ export default function MyLearning() {
                         className={`p-3 rounded-xl border text-center space-y-1.5 transition-all ${
                           isActive
                             ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
-                            : 'bg-slate-950/40 border-slate-800 text-slate-500'
+                            : 'bg-[#070A0F]/60 border-[#243247] text-slate-500'
                         }`}
                       >
                         <span className="text-[10px] font-bold block uppercase">{day}</span>
-                        <div className="w-6 h-6 rounded-full mx-auto flex items-center justify-center bg-slate-900 border border-slate-800">
+                        <div className="w-6 h-6 rounded-full mx-auto flex items-center justify-center bg-[#070A0F] border border-[#243247]">
                           {isActive ? (
                             <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                           ) : (
@@ -172,18 +185,18 @@ export default function MyLearning() {
 
             {/* OVERALL LEARNING METRICS GRID */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+              <div className="p-5 rounded-2xl bg-[#111A28] border border-[#243247] space-y-2 shadow-[0_0_15px_rgba(6,182,212,0.08)]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400 font-semibold">Overall Learning Progress</span>
                   <GraduationCap className="w-4 h-4 text-cyan-400" />
                 </div>
                 <p className="text-2xl font-bold text-white">{userState.learningStats?.overallProgress || 68}%</p>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-[#070A0F] h-1.5 rounded-full overflow-hidden border border-[#243247]/50">
                   <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${userState.learningStats?.overallProgress || 68}%` }} />
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+              <div className="p-5 rounded-2xl bg-[#111A28] border border-[#243247] space-y-2 shadow-[0_0_15px_rgba(16,185,129,0.08)]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400 font-semibold">Courses Completed</span>
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -192,7 +205,7 @@ export default function MyLearning() {
                 <span className="text-[11px] text-slate-400">Out of {initialCourses.length} Enrolled Modules</span>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+              <div className="p-5 rounded-2xl bg-[#111A28] border border-[#243247] space-y-2 shadow-[0_0_15px_rgba(59,130,246,0.08)]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400 font-semibold">Assessments Completed</span>
                   <FileCheck2 className="w-4 h-4 text-blue-400" />
@@ -201,7 +214,7 @@ export default function MyLearning() {
                 <span className="text-[11px] text-slate-400">Avg Score: <strong className="text-white">{userState.learningStats?.avgAssessmentScore || 82}%</strong></span>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+              <div className="p-5 rounded-2xl bg-[#111A28] border border-[#243247] space-y-2 shadow-[0_0_15px_rgba(20,184,166,0.08)]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400 font-semibold">Time Spent Learning</span>
                   <Clock className="w-4 h-4 text-teal-400" />
@@ -212,14 +225,14 @@ export default function MyLearning() {
             </div>
 
             {/* RECENT ACTIVITY LOG */}
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+            <div className="p-6 rounded-2xl bg-[#111A28] border border-[#243247] space-y-4">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <Activity className="w-4 h-4 text-cyan-400" />
                 <span>Recent Learning & Assessment Activity</span>
               </h3>
 
               <div className="space-y-3">
-                <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs">
+                <div className="p-3.5 rounded-xl bg-[#070A0F] border border-[#243247] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                       <FileCheck2 className="w-4 h-4" />
@@ -232,7 +245,7 @@ export default function MyLearning() {
                   <span className="text-emerald-400 font-bold shrink-0">+1 Day Streak</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs">
+                <div className="p-3.5 rounded-xl bg-[#070A0F] border border-[#243247] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
                       <Award className="w-4 h-4" />
@@ -282,11 +295,14 @@ export default function MyLearning() {
                     </div>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between gap-3">
-                    <span className="text-xs text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" />
-                      {course.duration}
-                    </span>
+                  <div className="pt-2 flex items-center justify-between gap-3 flex-wrap">
+                    <button
+                      onClick={() => updateCourseProgress(course.id, 25)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/25 text-xs font-semibold transition-colors"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Simulate Module Progress (+25%)</span>
+                    </button>
 
                     <button
                       onClick={() => setSelectedCourse(course)}

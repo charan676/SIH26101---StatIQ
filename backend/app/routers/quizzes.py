@@ -25,7 +25,7 @@ MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 MAX_EXTRACTED_CHARS = 40_000
 BACKEND_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 DEFAULT_MOCK_USER_ID = 1
-DEFAULT_MOCK_USER_EMAIL = "testuser@statiq.ai"
+DEFAULT_MOCK_USER_EMAIL = "testuser@mospi.gov.in"
 
 # Local development uses backend/.env, while an explicitly configured process
 # environment keeps precedence in deployment.
@@ -254,6 +254,35 @@ def get_dashboard(user_id: int, db: Session = Depends(get_db)) -> dict:
                 for item in reversed(latest_results)
             ],
         },
+    }
+
+
+@router.get("")
+def list_quizzes(db: Session = Depends(get_db)):
+    quizzes = db.scalars(select(Quiz).order_by(Quiz.id.desc())).all()
+    return [
+        {
+            "id": quiz.id,
+            "title": quiz.title,
+            "source_material_name": quiz.source_material_name,
+            "questions_count": len(quiz.questions) if quiz.questions else 0,
+            "created_by_user_id": quiz.created_by_user_id,
+        }
+        for quiz in quizzes
+    ]
+
+
+@router.get("/{quiz_id}")
+def get_quiz_detail(quiz_id: int, db: Session = Depends(get_db)):
+    quiz = db.get(Quiz, quiz_id)
+    if quiz is None:
+        raise HTTPException(status_code=404, detail="Quiz not found")
+    return {
+        "id": quiz.id,
+        "title": quiz.title,
+        "source_material_name": quiz.source_material_name,
+        "questions": quiz.questions,
+        "created_by_user_id": quiz.created_by_user_id,
     }
 
 

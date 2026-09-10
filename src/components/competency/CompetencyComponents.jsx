@@ -68,10 +68,10 @@ export function CurrentVsRequired({ current, required, showGap = true }) {
 
 export function CompetencyCard({ competency, onSelect }) {
   return (
-    <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-4 hover:border-slate-700 transition-colors">
+    <div className="p-5 rounded-xl bg-[#111A28] border border-[#243247] space-y-4 hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h4 className="text-base font-semibold text-white">{competency.name}</h4>
+          <h4 className="text-base font-bold text-white">{competency.name}</h4>
           <span className="text-xs text-slate-400">{competency.domain}</span>
         </div>
         <StatusBadge status={competency.status} />
@@ -81,12 +81,12 @@ export function CompetencyCard({ competency, onSelect }) {
 
       <CurrentVsRequired current={competency.current} required={competency.required} />
 
-      <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+      <div className="pt-3 border-t border-[#243247] flex items-center justify-between">
         <SkillGapIndicator gap={competency.gap} priority={competency.priority} />
         {onSelect && (
           <button
             onClick={() => onSelect(competency)}
-            className="text-xs text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1"
+            className="text-xs text-cyan-400 hover:text-cyan-300 font-bold inline-flex items-center gap-1"
           >
             <span>Details</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -100,10 +100,10 @@ export function CompetencyCard({ competency, onSelect }) {
 export function ReadinessScore({ score = 74, target = 82, roleName = "Senior Statistical Officer" }) {
   const gap = (target - score).toFixed(1);
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-cyan-950/30 border border-slate-800 p-6 md:p-8 backdrop-blur-md shadow-xl">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#111A28] via-[#111A28]/90 to-cyan-950/30 border border-cyan-500/40 p-6 md:p-8 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.12)]">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         <div className="space-y-3 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-medium border border-cyan-500/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/30">
             <ShieldCheck className="w-4 h-4" />
             <span>Official MoSPI Cadre Alignment</span>
           </div>
@@ -118,20 +118,20 @@ export function ReadinessScore({ score = 74, target = 82, roleName = "Senior Sta
         </div>
 
         {/* Readiness gauge and summary indicators */}
-        <div className="flex items-center gap-8 shrink-0 bg-slate-900/80 border border-slate-800/80 p-4 rounded-xl">
+        <div className="flex items-center gap-8 shrink-0 bg-[#070A0F]/80 border border-[#243247] p-4 rounded-xl shadow-inner">
           <ProgressRing score={score} size={100} strokeWidth={8} label="Readiness" />
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between gap-4">
-              <span className="text-slate-400 text-xs">Current Index</span>
+              <span className="text-slate-400 text-xs font-medium">Current Index</span>
               <span className="text-cyan-400 font-bold text-base">{score}%</span>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <span className="text-slate-400 text-xs">Required Target</span>
+              <span className="text-slate-400 text-xs font-medium">Required Target</span>
               <span className="text-blue-400 font-bold text-base">{target}%</span>
             </div>
-            <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-4">
-              <span className="text-slate-400 text-xs">Gap Index</span>
-              <span className="text-rose-400 font-bold text-xs bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+            <div className="pt-2 border-t border-[#243247] flex items-center justify-between gap-4">
+              <span className="text-slate-400 text-xs font-medium">Gap Index</span>
+              <span className="text-rose-400 font-bold text-xs bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
                 -{gap}% Gap
               </span>
             </div>
@@ -155,7 +155,7 @@ export function VisualSkillGapItem({ item }) {
   };
 
   return (
-    <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3 hover:border-slate-700 transition-colors">
+    <div className="p-4 rounded-xl bg-[#111A28] border border-[#243247] space-y-3 hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(6,182,212,0.12)] transition-all">
       <div className="flex items-center justify-between gap-2">
         <div>
           <h4 className="text-base font-semibold text-white">{item.name}</h4>

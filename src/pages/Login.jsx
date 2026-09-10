@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, ShieldCheck, User, Mail, ArrowRight, AlertCircle, Award, Search, ChevronDown, Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Sparkles, ShieldCheck, User, Mail, ArrowRight, AlertCircle, Award, Search, ChevronDown, Check, ArrowLeft } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 const OFFICIAL_ROLES = [
@@ -53,8 +53,8 @@ export default function Login() {
 
   const validateEmail = (val) => {
     const trimmed = val.trim().toLowerCase();
-    // Enforce official email ending with .gov.in or .nic.in (including subdomains)
-    const officialEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(gov\.in|nic\.in)$/i;
+    // Enforce official email ending with @gov.in, @nic.in, or subdomains like @department.gov.in, @organisation.nic.in
+    const officialEmailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)*(gov\.in|nic\.in)$/i;
     return officialEmailRegex.test(trimmed);
   };
 
@@ -104,12 +104,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F17] flex items-center justify-center p-4 py-12">
-      <div className="w-full max-w-lg p-8 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-6 shadow-2xl backdrop-blur-xl">
+    <div className="min-h-screen bg-[#070A0F] flex items-center justify-center p-4 py-12">
+      <div className="w-full max-w-lg p-8 rounded-2xl bg-[#111A28] border border-[#243247] space-y-6 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-xl">
+        {/* Top Back to Home Nav */}
+        <div className="flex items-center justify-between">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#070A0F] hover:bg-[#172235] text-slate-400 hover:text-white border border-[#243247] text-xs font-semibold transition-all hover:scale-[1.02]"
+          >
+            <ArrowLeft className="w-4 h-4 text-cyan-400" />
+            <span>Back to Home</span>
+          </Link>
+          <span className="text-[10px] text-slate-500 font-mono">StatIQ Portal</span>
+        </div>
+
         {/* Header */}
         <div className="text-center space-y-3">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-600 to-teal-400 p-0.5 shadow-lg shadow-cyan-500/20 mx-auto flex items-center justify-center">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <div className="w-full h-full bg-[#070A0F] rounded-[14px] flex items-center justify-center">
               <Sparkles className="w-7 h-7 text-cyan-400 animate-pulse" />
             </div>
           </div>
@@ -139,7 +151,7 @@ export default function Login() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full bg-[#070A0F] border border-[#243247] rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 placeholder="e.g. Ravi Kumar"
               />
             </div>
@@ -157,8 +169,8 @@ export default function Login() {
                 required
                 value={email}
                 onChange={handleEmailChange}
-                className={`w-full bg-slate-950/60 border rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-white focus:outline-none transition-colors ${
-                  emailError ? 'border-rose-500 focus:border-rose-500' : 'border-slate-800 focus:border-cyan-500'
+                className={`w-full bg-[#070A0F] border rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-white focus:outline-none transition-colors ${
+                  emailError ? 'border-rose-500 focus:border-rose-500' : 'border-[#243247] focus:border-cyan-500'
                 }`}
                 placeholder="ravi.kumar@department.gov.in"
               />
@@ -181,7 +193,7 @@ export default function Login() {
             {/* Select Trigger Box */}
             <div
               onClick={() => setIsRoleOpen(!isRoleOpen)}
-              className="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer flex items-center justify-between relative"
+              className="w-full bg-[#070A0F] border border-[#243247] hover:border-cyan-500/40 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer flex items-center justify-between relative"
             >
               <Award className="w-4 h-4 text-cyan-400 absolute left-3.5 top-3.5" />
               <span className="truncate pr-2">{role || "Select Official Role..."}</span>
@@ -190,7 +202,7 @@ export default function Login() {
 
             {/* Dropdown Menu Overlay */}
             {isRoleOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1.5 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 p-2 space-y-2 max-h-64 flex flex-col backdrop-blur-xl">
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#111A28] border border-[#243247] rounded-xl shadow-2xl z-50 p-2 space-y-2 max-h-64 flex flex-col backdrop-blur-xl">
                 {/* Search Input Filter */}
                 <div className="relative shrink-0">
                   <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
@@ -199,7 +211,7 @@ export default function Login() {
                     value={roleSearch}
                     onChange={(e) => setRoleSearch(e.target.value)}
                     placeholder="Search 18 official roles..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-[#070A0F] border border-[#243247] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
                     autoFocus
                   />
                 </div>
@@ -223,7 +235,7 @@ export default function Login() {
                           className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-between ${
                             isSelected
                               ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-500/30'
-                              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                              : 'text-slate-300 hover:text-white hover:bg-[#172235]'
                           }`}
                         >
                           <span className="truncate">{r}</span>
@@ -252,7 +264,7 @@ export default function Login() {
                   className={`py-2.5 rounded-xl text-xs font-bold transition-all border ${
                     competencyLevel === lvl
                       ? 'bg-cyan-500/15 border-cyan-500 text-cyan-300 shadow-sm'
-                      : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      : 'bg-[#070A0F] border-[#243247] text-slate-400 hover:text-white hover:bg-[#172235]'
                   }`}
                 >
                   {lvl}
@@ -271,7 +283,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={!!emailError}
-            className={`w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-xs font-bold text-white shadow-lg shadow-cyan-500/20 hover:scale-[1.01] transition-transform flex items-center justify-center gap-2 ${
+            className={`w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-xs font-bold text-white shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:scale-[1.01] transition-transform flex items-center justify-center gap-2 ${
               emailError ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -280,7 +292,7 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="text-center pt-3 border-t border-slate-800">
+        <div className="text-center pt-3 border-t border-[#243247]">
           <span className="text-[11px] text-slate-500">
             Ministry of Statistics & Programme Implementation • StatIQ Portal v2.4
           </span>

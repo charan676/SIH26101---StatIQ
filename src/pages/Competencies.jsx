@@ -57,8 +57,8 @@ export default function Competencies() {
         </div>
 
         {/* Competency Radar Visual Center */}
-        <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="p-6 rounded-2xl bg-[#111A28] border border-[#243247] space-y-4 shadow-[0_10px_30px_rgba(7,10,15,0.6)]">
+          <div className="flex items-center justify-between border-b border-[#243247] pb-4">
             <div>
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <BrainCircuit className="w-5 h-5 text-cyan-400" />
@@ -66,7 +66,7 @@ export default function Competencies() {
               </h3>
               <p className="text-xs text-slate-400">Current Officer Scores vs Senior Statistical Officer Target Requirements</p>
             </div>
-            <span className="text-xs text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+            <span className="text-xs text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30 font-bold">
               9 Tracked Domains
             </span>
           </div>

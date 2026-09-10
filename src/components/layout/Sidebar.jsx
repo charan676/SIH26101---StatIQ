@@ -62,22 +62,22 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-[#0B0F17] border-r border-slate-800 text-slate-200 transition-all duration-300 relative select-none">
+    <div className="flex flex-col h-full bg-[#0B1220] border-r border-[#243247] text-slate-200 transition-all duration-300 relative select-none">
       {/* Brand Header */}
-      <div className={`flex items-center h-16 border-b border-slate-800/80 bg-slate-950/40 ${
+      <div className={`flex items-center h-16 border-b border-[#243247] bg-[#070A0F]/60 ${
         collapsed ? 'justify-center px-0' : 'justify-between px-4'
       }`}>
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#111A28] border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] flex items-center justify-center shrink-0">
             <Sparkles className="w-4.5 h-4.5 text-cyan-400" />
           </div>
           {!collapsed && (
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-lg tracking-tight text-white">
+                <span className="font-extrabold text-lg tracking-tight text-white font-sans">
                   Stat<span className="text-cyan-400">IQ</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-widest font-mono font-semibold px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="text-[10px] uppercase tracking-widest font-mono font-bold px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                   MoSPI
                 </span>
               </div>
@@ -89,7 +89,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         {!collapsed && (
           <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+            className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#111A28]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,7 +101,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         {navigation.map((group, idx) => (
           <div key={idx} className="space-y-1">
             {!collapsed && (
-              <div className="px-3 text-[11px] font-semibold tracking-wider text-slate-500 uppercase mb-1.5 font-sans">
+              <div className="px-3 text-[11px] font-semibold tracking-wider text-slate-400 uppercase mb-1.5 font-sans">
                 {group.group}
               </div>
             )}
@@ -119,18 +119,18 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                     collapsed
                       ? `w-10 h-10 mx-auto flex items-center justify-center rounded-xl transition-all duration-150 relative ${
                           isActive
-                            ? 'bg-slate-800 text-cyan-400 border border-slate-700'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                            ? 'bg-[#172235] text-cyan-400 border border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.2)]'
+                            : 'text-slate-400 hover:text-white hover:bg-[#111A28]'
                         }`
-                      : `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 group relative ${
+                      : `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 group relative ${
                           isActive
-                            ? 'bg-slate-800/80 text-cyan-400 border-l-2 border-cyan-400 font-semibold'
-                            : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border-l-2 border-transparent'
+                            ? 'bg-[#172235] text-cyan-400 border border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.15)] font-bold'
+                            : 'text-slate-400 hover:text-slate-100 hover:bg-[#111A28] border border-transparent'
                         }`
                   }
                 >
                   <Icon
-                    className={`w-5 h-5 shrink-0 transition-colors duration-150 ${
+                    className={`w-4.5 h-4.5 shrink-0 transition-colors duration-150 ${
                       isActive
                         ? 'text-cyan-400'
                         : 'text-slate-400 group-hover:text-slate-200'
@@ -140,7 +140,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                     <div className="flex items-center justify-between flex-1 truncate">
                       <span className="truncate">{item.name}</span>
                       {item.badge && (
-                        <span className="ml-2 text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20 shrink-0">
+                        <span className="ml-2 text-[10px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 shrink-0">
                           {item.badge}
                         </span>
                       )}
@@ -155,19 +155,19 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
 
       {/* Official SSO Verification Footer */}
       {!collapsed && (
-        <div className="p-3 m-3 mb-1 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
+        <div className="p-3 m-3 mb-1 rounded-xl bg-[#111A28] border border-[#243247] flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-xs font-semibold text-white truncate">{userState.name}</span>
+            <span className="text-xs font-bold text-white truncate">{userState.name}</span>
             <span className="text-[10px] text-slate-400 font-mono truncate">{userState.role}</span>
           </div>
         </div>
       )}
 
       {/* Red Logout Symbol Box at Bottom */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/40">
+      <div className="p-3 border-t border-[#243247] bg-[#070A0F]/60">
         <button
           onClick={handleLogout}
           title={collapsed ? "Log Out" : undefined}
@@ -177,7 +177,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               : "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/30 hover:bg-rose-500/25 transition-all text-xs font-bold shadow-md shadow-rose-500/10 cursor-pointer"
           }
         >
-          <LogOut className="w-5 h-5 text-rose-400 shrink-0" />
+          <LogOut className="w-4.5 h-4.5 text-rose-400 shrink-0" />
           {!collapsed && <span className="truncate">Log Out ({userState.name.split(' ')[0]})</span>}
         </button>
       </div>

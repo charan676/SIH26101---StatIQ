@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import { useQuiz } from '../context/QuizContext';
+import { useUser } from '../context/UserContext';
 import { FileCheck2, Play, CheckCircle2, Clock, Award, Sparkles, HelpCircle, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Assessments() {
   const { publishedQuizzes } = useQuiz();
+  const { userState } = useUser();
   const [selectedFilter, setSelectedFilter] = useState('all');
 
-  const filteredAssessments = publishedQuizzes.filter(a => {
+  const completedMap = userState.completedQuizzes || {};
+
+  const filteredAssessments = publishedQuizzes.map(asm => {
+    const userCompletion = completedMap[asm.id];
+    if (userCompletion) {
+      return {
+        ...asm,
+        status: 'Completed',
+        scorePercent: userCompletion.scorePercent
+      };
+    }
+    return asm;
+  }).filter(a => {
     if (selectedFilter === 'all') return true;
     return a.category === selectedFilter;
   });
@@ -17,7 +31,7 @@ export default function Assessments() {
     <PageContainer>
       <div className="space-y-8 pb-12">
         {/* Header Title & Subtitle */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#243247] pb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 tracking-tight">
               <FileCheck2 className="w-6 h-6 text-cyan-400" />
@@ -30,7 +44,7 @@ export default function Assessments() {
 
           <Link
             to="/quiz/quiz_stat_101"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-xs font-bold text-white shadow-md transition-all hover:scale-[1.02] shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-xs font-bold text-white shadow-[0_0_15px_rgba(6,182,212,0.25)] transition-all hover:scale-[1.02] shrink-0"
           >
             <Play className="w-4 h-4 fill-white" />
             <span>Launch Quick Assessment</span>
@@ -45,8 +59,8 @@ export default function Assessments() {
               onClick={() => setSelectedFilter(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 selectedFilter === cat
-                  ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-cyan-500 text-slate-950 shadow-sm font-bold'
+                  : 'bg-[#111A28] text-slate-400 hover:text-white border border-[#243247]'
               }`}
             >
               {cat === 'all' ? 'All Assessments' : cat}
@@ -59,7 +73,7 @@ export default function Assessments() {
           {filteredAssessments.map((asm) => (
             <div
               key={asm.id}
-              className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 flex flex-col justify-between hover:border-slate-700 transition-colors"
+              className="p-6 rounded-2xl bg-[#111A28] border border-[#243247] space-y-4 flex flex-col justify-between hover:border-cyan-500/40 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.08)]"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
@@ -78,14 +92,14 @@ export default function Assessments() {
                 <h3 className="text-lg font-bold text-white leading-snug">{asm.title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">{asm.description}</p>
 
-                <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-slate-800">
+                <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-[#243247]">
                   <span className="flex items-center gap-1"><HelpCircle className="w-3.5 h-3.5 text-cyan-400" />{asm.questionsCount} Questions</span>
                   <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-slate-400" />{asm.durationMinutes} Mins</span>
                   <span className="text-slate-300 font-medium">Difficulty: {asm.difficulty}</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+              <div className="pt-4 border-t border-[#243247] flex items-center justify-between">
                 {asm.scorePercent !== null ? (
                   <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
                     <CheckCircle2 className="w-4 h-4" /> Score: {asm.scorePercent}% Passed

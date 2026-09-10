@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   :root {
@@ -8,7 +8,7 @@
   }
   
   body {
-    background-color: #0B0F19;
+    background-color: #070A0F;
     color: #F8FAFC;
     font-family: 'Inter', sans-serif;
   }
@@ -20,16 +20,16 @@
   }
   
   ::-webkit-scrollbar-track {
-    background: #0B0F19;
+    background: #070A0F;
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #1E293B;
+    background: #243247;
     border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
+    background: #3B82F6;
   }
 }
 
@@ -41,39 +41,45 @@
   }
 
   .stat-grid-dense {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-image: linear-gradient(to right, rgba(36, 50, 71, 0.3) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(36, 50, 71, 0.3) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
-  /* Glassmorphic Cards */
-  .stat-glass-card {
-    background: rgba(22, 31, 51, 0.65);
+  /* Glassmorphic Cards (Primary Reference Style) */
+  .stat-card-surface {
+    background: rgba(17, 26, 40, 0.85);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid #243247;
+    box-shadow: 0 10px 30px rgba(7, 10, 15, 0.6);
   }
 
-  .stat-glass-card-hover {
-    transition: all 0.2s ease-in-out;
-  }
-  .stat-glass-card-hover:hover {
-    border-color: rgba(6, 182, 212, 0.25);
-    box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.15);
+  .stat-card-elevated {
+    background: #172235;
+    border: 1px solid #243247;
   }
 
-  /* Glowing Borders */
-  .border-glow-cyan {
+  .stat-card-hover {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stat-card-hover:hover {
     border-color: rgba(6, 182, 212, 0.4);
-    box-shadow: 0 0 12px -2px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+  }
+
+  /* Ambient Glowing Borders */
+  .border-glow-cyan {
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.18);
   }
 
   .border-glow-blue {
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 0 12px -2px rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.18);
   }
 
   .border-glow-teal {
-    border-color: rgba(20, 184, 166, 0.4);
-    box-shadow: 0 0 12px -2px rgba(20, 184, 166, 0.3);
+    border-color: rgba(20, 184, 166, 0.5);
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.18);
   }
 }

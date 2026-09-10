@@ -78,7 +78,7 @@ export function GapChart({ data = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
           <XAxis dataKey="name" tick={{ fill: '#94A3B8', fontSize: 10, fontFamily: 'JetBrains Mono' }} interval={0} angle={-25} textAnchor="end" />
           <YAxis tick={{ fill: '#64748B', fontSize: 10 }} domain={[0, 100]} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} cursor={false} />
           <Bar dataKey="Gap" fill="#EF4444" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>

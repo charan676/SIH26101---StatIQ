@@ -138,3 +138,49 @@ export const learningPathSteps = [
     recommendedRole: "Lead Data Analyst"
   }
 ];
+
+export function getDynamicLearningPath(weakAreas = [], role = "Senior Statistical Officer", competencyProfile = null) {
+  if (!weakAreas || weakAreas.length === 0) {
+    weakAreas = ["GIS & Spatial Sampling", "AI/ML", "Python & SQL"];
+  }
+
+  const steps = weakAreas.map((area, idx) => {
+    const matchedCourse = courses.find(c =>
+      c.competency.toLowerCase().includes(area.toLowerCase()) ||
+      area.toLowerCase().includes(c.competency.toLowerCase()) ||
+      c.title.toLowerCase().includes(area.toLowerCase().split(' ')[0])
+    ) || courses[idx % courses.length];
+
+    return {
+      stepNumber: idx + 1,
+      title: `${area} Mastery & Application`,
+      competency: area,
+      courseId: matchedCourse.id,
+      courseCode: matchedCourse.code,
+      courseTitle: matchedCourse.title,
+      status: idx === 0 ? "In Progress" : idx === 1 ? "Up Next" : "Upcoming",
+      estimatedHours: parseInt(matchedCourse.duration) || 12,
+      coursesCount: 1,
+      completionPercentage: idx === 0 ? 35 : 0,
+      recommendedRole: role
+    };
+  });
+
+  // Always append Capstone verification step
+  steps.push({
+    stepNumber: steps.length + 1,
+    title: "Official Capstone Evaluation & Competency Re-indexing",
+    competency: "Cross-Domain Verification",
+    courseId: "capstone_eval",
+    courseCode: "MOSPI-EVAL-501",
+    courseTitle: "Cadre Capacity Verification Assessment",
+    status: "Locked",
+    estimatedHours: 4,
+    coursesCount: 1,
+    completionPercentage: 0,
+    recommendedRole: role
+  });
+
+  return steps;
+}
+
