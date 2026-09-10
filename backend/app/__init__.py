@@ -1,0 +1,1 @@
+"""StatIQ FastAPI backend package."""

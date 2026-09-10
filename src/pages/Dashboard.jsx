@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import { ReadinessScore, VisualSkillGapItem } from '../components/competency/CompetencyComponents';
 import { CompetencyRadar } from '../components/competency/CompetencyRadar';
 import { ProgressChart } from '../components/analytics/AnalyticsComponents';
-import { competencies as initialCompetencies } from '../data/competencyData';
 import { useUser } from '../context/UserContext';
+import { getDashboardData } from '../utils/api';
 import {
   Sparkles,
   TrendingDown,
@@ -21,36 +21,46 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const { userState } = useUser();
+  const [latestResults, setLatestResults] = useState([]);
+  const [competencies, setCompetencies] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+
+    getDashboardData(1)
+      .then((data) => {
+        if (!active) return;
+        setLatestResults(data.latest_results || []);
+        setCompetencies(data.competencies || []);
+      })
+      .catch((error) => {
+        // Keep empty chart states when the local backend is unavailable.
+        console.error('Unable to load dashboard data:', error);
+      });
+
+    return () => { active = false; };
+  }, []);
 
   const userReadiness = userState.overallReadiness || 74;
   const userRole = userState.role || "Statistical Officer / Employee";
   const userLevel = userState.competencyLevel || "Intermediate";
   const diagnosticResult = userState.diagnosticResult;
 
-  // Calculate dynamic competencies based on readiness score
-  const dynamicCompetencies = initialCompetencies.map(c => {
-    let currentVal = c.current;
-    if (userState.diagnosticResult?.scorePercent) {
-      const delta = Math.round((userState.diagnosticResult.scorePercent - 70) / 3);
-      currentVal = Math.min(95, Math.max(35, c.current + delta));
-    }
-    const gapVal = Math.max(0, c.required - currentVal);
-    return {
-      ...c,
-      current: currentVal,
-      gap: gapVal
-    };
-  });
+  const dynamicCompetencies = competencies.map((competency) => ({
+    id: competency.code,
+    name: competency.name,
+    domain: competency.code,
+    current: competency.current_level,
+    required: competency.required_level,
+    gap: competency.remaining_gap,
+  }));
 
   const criticalGaps = dynamicCompetencies.filter(c => c.gap > 0).sort((a, b) => b.gap - a.gap);
 
-  const readinessJourneyData = [
-    { month: 'May', readiness: Math.max(40, userReadiness - 10) },
-    { month: 'June', readiness: Math.max(45, userReadiness - 7) },
-    { month: 'July', readiness: Math.max(50, userReadiness - 4) },
-    { month: 'August', readiness: Math.max(55, userReadiness - 2) },
-    { month: 'September', readiness: userReadiness },
-  ];
+  const readinessJourneyData = latestResults.map((result) => ({
+    month: result.quiz_title || `Quiz ${result.quiz_id}`,
+    readiness: result.score_percent,
+  }));
 
   // Dynamic weak area recommendation
   const primaryWeakArea = diagnosticResult?.weakAreas?.[0] || "GIS & Spatial Sampling";
